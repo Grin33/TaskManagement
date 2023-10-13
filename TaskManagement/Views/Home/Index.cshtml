@@ -1,0 +1,160 @@
+﻿@using TaskManagement.Data.Enums
+@model IEnumerable<TaskManagement.Models.Task>
+
+@if (User.Identity?.IsAuthenticated != true)
+{
+  <div class="d-flex justify-content-center align-items-center mt-5">
+  <form asp-action="Login" asp-controller="Account" method="post">
+    <div class="card" style="background-color: #fff; width: 280px; border-radius: 33px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);padding: 2rem !important;">
+      <label style="margin-bottom:20px; margin-left:5px">Вход в аккаунт</label>
+      <input type="text" placeholder="Имя Пользователя" class="form-control" name="username" style="border-radius: 33px;"/>
+      <input type="password" placeholder="Пароль" class="form-control" name="password" style="margin-top: 20px; border-radius: 33px;" />
+      <button type="submit" style="color:#fff;background-color: #0d6efd; border-color: #0d6efd; margin-top: 20px; border-radius: 33px;">Войти</button>
+      <input type="button" style="color:black;background-color: #fff; border-color: black; margin-top: 20px; margin-bottom:10px; border-radius: 33px;" value="Регистрация" onclick="location.href='@Url.Action("Register", "Account")'" />
+    </div>
+  </form>
+  </div>
+}
+@if (User.Identity?.IsAuthenticated == true)
+{
+
+ 
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <div class="card" style="border-radius: 15px;">
+          <div class="card-header bg-primary text-white" style="border-top-left-radius: 15px; border-top-right-radius:15px; border-bottom-left-radius: 5px; border-bottom-right-radius: 5px">
+            К исполнению
+          </div>
+          <div class="card-body">
+            <ul class="list-group">
+              @foreach(var item in Model.ToList())
+              {
+                if(item.Status == Status.ExecutorRequired)
+                {
+                    <div class="card shadow-sm mt-3" style="background-color: #fff; border-radius: 15px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                      <div class="card-header py-3" style="border-radius: 15px">
+                      <h3 class="my-0 fw-normal">@item.Name</h3>
+                    </div>
+                    <div class="card-body">
+                        <a href="@Url.Action("Details","Tasks",new{ id = item.Id})" class="stretched-link"></a>
+                      <p class="card-text">@item.Description</p>
+                      <div class="d-flex justify-content-between align-items-center">
+                        <div class="btn-group">
+                          </div>
+                          @if (item.Priority == Priority.High)
+                          {
+                            <small class="text-body-secondary badge rounded-pill bg-danger">Высокий</small>
+                          }
+                          @if (item.Priority == Priority.Medium)
+                          {
+
+                            <small class="text-body-secondary badge rounded-pill bg-warning">Средний</small>
+                          }
+                          @if (item.Priority == Priority.Low)
+                          {
+                            <small class="text-body-secondary badge rounded-pill bg-success">Низкий</small>
+                          }
+                      </div>
+                    </div>
+                  </div>
+                }
+              }
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card"  style="border-radius: 15px;">
+          <div class="card-header bg-warning"  style="border-top-left-radius: 15px; border-top-right-radius:15px; border-bottom-left-radius: 5px; border-bottom-right-radius: 5px">
+            В процессе
+          </div>
+          <div class="card-body">
+            <ul class="list-group">
+              @foreach (var item in Model.ToList())
+              {
+                if ((item.Status == Status.InProgress) 
+                || (item.Status == Status.Review))
+                {
+                    <div class="card shadow-sm mt-3" style="background-color: #fff; border-radius: 15px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                      <div class="card-header py-3" style="border-radius: 15px;">
+                      <h3 class="my-0 fw-normal">@item.Name</h3>
+                    </div>
+                    <div class="card-body">
+
+                        <a href="@Url.Action("Details","Tasks",new{ id = item.Id})" class="stretched-link"></a>
+                      <p class="card-text">@item.Description</p>
+                      <div class="d-flex justify-content-between align-items-center">
+                        <div class="btn-group">
+                          </div>
+                          @if (item.Priority == Priority.High)
+                          {
+                            <small class="text-body-secondary badge rounded-pill bg-danger">Высокий</small>
+                          }
+                          @if (item.Priority == Priority.Medium)
+                          {
+
+                            <small class="text-body-secondary badge rounded-pill bg-warning">Средний</small>
+                          }
+                          @if (item.Priority == Priority.Low)
+                          {
+                            <small class="text-body-secondary badge rounded-pill bg-success">Низкий</small>
+                          }
+                      </div>
+                    </div>
+                  </div>
+                }
+              }
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card" style="border-radius: 15px; ">
+          <div class="card-header bg-success text-white"  style="border-top-left-radius: 15px; border-top-right-radius:15px; border-bottom-left-radius: 5px; border-bottom-right-radius: 5px">
+            Выполнено
+          </div>
+          <div class="card-body">
+            <ul class="list-group">
+              @foreach (var item in Model.ToList())
+              {
+                if (item.Status == Status.Finished)
+                {
+                    <div class="card shadow-sm mt-3" style="background-color: #fff; border-radius: 15px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                      <div class="card-header py-3" style="border-radius: 15px;">
+                      <h3 class="my-0 fw-normal">@item.Name</h3>
+                    </div>
+                    <div class="card-body">
+
+                        <a href="@Url.Action("Details","Tasks",new{ id = item.Id})" class="stretched-link"></a>
+                      <p class="card-text">@item.Description</p>
+                      <div class="d-flex justify-content-between align-items-center">
+                        <div class="btn-group">
+                          </div>
+                          @if (item.Priority == Priority.High)
+                          {
+                            <small class="text-body-secondary badge rounded-pill bg-danger">Высокий</small>
+                          }
+                          @if (item.Priority == Priority.Medium)
+                          {
+
+                            <small class="text-body-secondary badge rounded-pill bg-warning">Средний</small>
+                          }
+                          @if (item.Priority == Priority.Low)
+                          {
+                            <small class="text-body-secondary badge rounded-pill bg-success">Низкий</small>
+                          }
+                      </div>
+                    </div>
+                  </div>
+                }
+              }
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+}

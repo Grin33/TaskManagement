@@ -1,0 +1,44 @@
+﻿@model TaskManagement.Models.User
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="container card p-2" style="border-radius: 15px; width: 600px">
+  <div class="container-fluid py-2">
+    <div class="row">
+      <div class="col-4">
+        <img src="https://i.imgur.com/hepj9ZS.png" class="img-fluid profile-image" style="border-radius:10px; border:2px solid #0d6efd">
+      </div>
+      <div class="col-sm">
+        <h5>@Model.Username</h5>
+        <p>@Model.Email</p>
+        <span class=" px-4 rounded text-white" style="background-color: grey; position:relative;">@Model.Role</span>
+      </div>
+    </div>
+    <div class="row pt-3">
+      <div class="col-sm-5">
+        <label style="font-weight: bold">Информация: </label>
+      </div>
+      <div class="col-sm">
+        <p>@Model.Information</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-5">
+        <label style="font-weight: bold">Дата создания: </label>
+      </div>
+      <div class="col-sm">
+        <p>@Model.CreatedAt</p>
+      </div>
+    </div>
+    @if ((User.IsInRole("Admin")) || (User.IsInRole("Moderator")) || (Model.Id == Guid.Parse(User.Claims.Where(k => k.Type == "Id").FirstOrDefault().Value)))
+    {
+      <a type="button" class="w-100 btn btn-lg btn-outline-primary" asp-controller="Users" asp-action="Edit" asp-route-id="@Model.Id">Изменить</a>
+    }
+    @if((User.IsInRole("Admin")))
+    {
+      <a type="button" class="w-100 btn btn-lg btn-outline-danger" asp-controller="Users" asp-action="Delete" asp-route-id="@Model.Id">Удалить</a>
+    }
+  </div>
+</div>

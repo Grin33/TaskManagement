@@ -1,0 +1,71 @@
+﻿@using TaskManagement.Data.Enums
+@model TaskManagement.ViewModels.TaskEditViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Task</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="currentTask.Id" />
+            <div class="form-group">
+        <label asp-for="currentTask.Name" class="control-label"></label>
+        <input asp-for="currentTask.Name" class="form-control" />
+        <span asp-validation-for="currentTask.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+        <label asp-for="currentTask.Description" class="control-label"></label>
+        <input asp-for="currentTask.Description" class="form-control" />
+        <span asp-validation-for="currentTask.Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="currentTask.Status" class="control-label"></label>
+                <select asp-for="currentTask.Status" class="form-control"
+                        asp-items="@(Html.GetEnumSelectList<Status>())"></select>
+                <span asp-validation-for="currentTask.Status" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="currentTask.Priority" class="control-label"></label>
+                <select asp-for="currentTask.Priority" class="form-control"
+                        asp-items="@(Html.GetEnumSelectList<Priority>())"></select>
+                <span asp-validation-for="currentTask.Priority" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+        <label asp-for="currentTask.DeadLine" class="control-label"></label>
+        <input asp-for="currentTask.DeadLine" class="form-control" />
+        <span asp-validation-for="currentTask.DeadLine" class="text-danger"></span>
+            </div>
+      <div class="row mb-3">
+        <label class="col-sm-3 col-form-label" asp-for="currentExecutors">Executors</label>
+        <div class="col-sm-6">
+          <select multiple class="form-control text-center"
+                  asp-for="currentExecutors"
+                  asp-items="@(Model.possibleExecutors)">
+          </select>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <label class="col-sm-3 col-form-label" asp-for="currentReviewers">Reviewers</label>
+        <div class="col-sm-6">
+          <select multiple class="form-control text-center"
+                  asp-for="currentReviewers"
+                  asp-items="@(Model.possibleReviewers)">
+          </select>
+        </div>
+      </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

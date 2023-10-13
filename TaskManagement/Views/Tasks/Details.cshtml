@@ -1,0 +1,134 @@
+﻿@using TaskManagement.Data.Enums
+@model TaskManagement.ViewModels.TaskDetailsViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="container card p-2" style="border-radius: 15px">
+  <div class="row">
+    @*Инфа о таске*@
+    <div class="col-7">
+      <div class="p-5 mb-4 bg-body-tertiary" style="border-radius: 15px">
+        <div class="container-fluid py-5">
+          <div class="text-center">
+            <h1 class="display-5 fw-bold">@Model.Name</h1>
+            <p class="m-5 fs-4">@Model.Description</p>
+          </div>
+          <div class="">
+            <p class="display-6">@Html.DisplayNameFor(x => @Model.DeadLine)</p>
+            <p>@Model.DeadLine</p>
+          </div>
+          <div class="">
+            <p class="display-6">@Html.DisplayNameFor(x => @Model.Priority)</p>
+            <div>
+              @if (Model.Priority == Priority.Low)
+              {
+                <small class="text-body-secondary badge rounded-pill bg-secondary">@Model.Priority</small>
+              }
+              @if (Model.Priority == Priority.Medium)
+              {
+                <small class="text-body-secondary badge rounded-pill bg-warning">@Model.Priority</small>
+              }
+              @if (Model.Priority == Priority.High)
+              {
+                <small class="text-body-secondary badge rounded-pill bg-danger">@Model.Priority</small>
+              }
+            </div>
+          </div>
+          <div class="">
+            <p class="display-6">@Html.DisplayNameFor(x => @Model.Status)</p>
+            <div>
+              @if (Model.Status == Status.Finished)
+              {
+                <small class="text-body-secondary badge rounded-pill bg-secondary">@Model.Status</small>
+              }
+              @if (Model.Status == Status.Review)
+              {
+                <small class="text-body-secondary badge rounded-pill bg-primary">@Model.Status</small>
+              }
+              @if (Model.Status == Status.ExecutorRequired)
+              {
+                <small class="text-body-secondary badge rounded-pill bg-warning">@Model.Status</small>
+              }
+              @if (Model.Status == Status.InProgress)
+              {
+                <small class="text-body-secondary badge rounded-pill bg-success">@Model.Status</small>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+      <a type="button" class="w-100 btn btn-lg btn-outline-primary" asp-controller="Tasks" asp-action="Edit" asp-route-id="@Model.Id">Изменить</a>
+      <a type="button" class="w-100 btn btn-lg btn-outline-danger" asp-controller="Tasks" asp-action="Delete" asp-route-id="@Model.Id">Удалить</a>
+      <div class="d-flex justify-content-sm-evenly align-items-sm-start" style="padding-top: 20px">
+        <div class="">
+          <h3 class="text-center">@Html.DisplayNameFor(x => @Model.Reviewers)</h3>
+          <div class="container-fluid">
+            @foreach (var item in Model.Reviewers)
+            {
+              <div class="list-group mb-3">
+                <div class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
+                  <div class="d-flex gap-2 w-100 justify-content-center">
+                    <div>
+                      <h6 class="mb-0">@item.Username</h6>
+                      <p class="mb-0 opacity-75">@item.Email</p>
+                      <a href="@Url.Action("Details","Users",new{ id = item.Id})" class="stretched-link"></a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+        <div class="">
+          <h3 class="text-center">@Html.DisplayNameFor(x => @Model.Executors)</h3>
+          <div class="container-fluid">
+            @foreach (var item in Model.Executors)
+            {
+              <div class="list-group mb-3">
+                <div class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
+                  <div class="d-flex gap-2 w-100 justify-content-center">
+                    <div>
+                      <h6 class="mb-0">@item.Username</h6>
+                      <p class="mb-0 opacity-75">@item.Email</p>
+                      <a href="@Url.Action("Details","Users",new{ id = item.Id})" class="stretched-link"></a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+    @*Комменты*@
+    <div class="col-sm">
+      <div class="card p-2 mb-1 bg-body-teriary h-100" style="border-radius: 15px;">
+        <div class="container" style="padding-left: 5px">
+          @if ((Model.Comments == null) || (Model.Comments.Count() == 0))
+          {
+            <label style="padding-left: 5px">Комментариев пока нет...</label>
+          }
+          @foreach (var comment in Model.CommentDetails)
+          {
+            <div class="row pt-2">
+              <label style="font-weight: lighter; padding-left: 1px">@comment.CreatedAt</label>
+              <div class="container-fluid" style="">
+                <label style="font-weight: bold">@comment.Author.Username :</label>
+                <label style="padding-left: 5px">@comment.Message</label>
+              </div>
+            </div>
+          }
+        </div>
+        <div class="row pt-4">
+          <form asp-action="AddComment" asp-controller="Tasks" method="post" style="display: inline-flex;">
+            <input type="hidden" name="taskId" class="form-control" value="@Model.Id" />
+            <input type="text" placeholder="Написать комментарий..." class="form-control d-inline p-2 h-100" name="commentText" style="border-bottom-left-radius: 33px; border-top-left-radius: 33px" />
+            <button type="submit" class="form-control-sm d-inline p-2 h-100 w-50" style="color:#fff;background-color: #0d6efd; border-color: #0d6efd; border-top-right-radius: 33px; border-bottom-right-radius: 33px">Отправить</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

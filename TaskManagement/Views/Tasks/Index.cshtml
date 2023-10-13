@@ -1,0 +1,77 @@
+﻿@using TaskManagement.Data.Enums
+@model IEnumerable<TaskManagement.Models.Task>
+
+@{
+	ViewData["Title"] = "Формирование отчета";
+}
+
+
+<form asp-action="FormReportUser">
+	<div class="row border border-success" style="margin: 2rem; border-radius: 15px">
+		<div class="m-2">
+			<div style="margin-right: 1rem">
+				<input type="checkbox" id="HighPriorityCheck" value="true" name="highPriority" />
+				<input name="highPriority" type="hidden" value="false"/>
+				<label>Задачи с высоким приоритетом</label>
+			</div>
+			<div style="margin-right: 1rem">
+				<input type="checkbox" value="true" name="mediumPriority" />
+				<input name="mediumPriority" type="hidden" value="false" />
+				<label>Задачи со средним приоритетом</label>
+			</div>
+			<div style="margin-right: 1rem" >
+				<input type="checkbox" value="true" name="LowPriority" />
+				<input name="LowPriority" type="hidden" value="false" />
+				<label>Задачи с низким приоритетом</label>
+			</div>
+			<div style="margin-right: 1rem">
+				<input type="checkbox" value="true" name="isReview" />
+				<input name="isReview" type="hidden" value="false" />
+				<label>Задачи на этапе Review</label>
+			</div>
+			<div style="margin-right: 1rem">
+				<input type="checkbox" value="true" name="isInProgress" />
+				<input name="isInProgress" type="hidden" value="false" />
+				<label>Задачи на этапе InProgress</label>
+			</div>
+			<div style="display:inline-block; margin-right: 1rem">
+				<input type="checkbox" value="true" name="isExecRequired" />
+				<input name="isExecRequired" type="hidden" value="false" />
+				<label>Задачи на этапе ExecutorRequired</label>
+			</div>
+		</div>
+		<button type="submit" class="btn btn-outline-success" style="border-bottom-left-radius: 15px; border-bottom-right-radius:15px">Сформировать отчет</button>
+	</div>
+</form>
+
+
+<div class="py-2 bg-body-tertiary">
+	<div class="container">
+		<div class="row row-cols-md-4 g-3">
+			@foreach(var item in Model)
+			{
+				<div class="col">
+					<div class="container d-flex justify-content-center mt-1">
+						<div class="card shadow-sm mt-3 w-100" style="background-color: #fff; border-radius: 15px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+							<div class="card-header py-3" style="border-top-left-radius: 15px; border-top-right-radius: 15px">
+								<h3 class="my-0 fw-normal">@item.Name</h3>
+							</div>
+							<div class="card-body">
+								<span class="d-inline-block text-truncate pb-2" style="max-width: 85%;">@item.Description</span>
+								@*<p class="card-text">@item.Description</p>*@
+								<a type="button" class="w-100 btn btn-sm btn-outline-primary" style="margin-bottom: 2px; margin-top: 2px;" asp-controller="Tasks" asp-action="Details" asp-route-id="@item.Id">Изменить</a>
+								@if(User.IsInRole("Admin") || User.IsInRole("Moderator"))
+								{
+									<a type="button" class="w-100 btn btn-sm btn-outline-danger" style="margin-bottom: 2px; margin-top: 2px;" asp-controller="Tasks" asp-action="Details" asp-route-id="@item.Id">Удалить</a>
+								}
+							</div>
+						</div>
+					</div>
+				</div>
+			}
+		</div>
+	</div>
+</div>
+
+<script>
+</script>
