@@ -17,9 +17,10 @@ namespace TaskManagement.ViewModels
 		public bool isExecReqEnabled { get; set; }
 		public bool isFinished { get; set; }
 
+		public bool isUserLinked { get; set; }
 		public TaskFilterViewModel(IEnumerable<Task?> tasks,string FilterText, bool HighPriorityEnabled
 			, bool MediumPriorityEnabled, bool LowPriorityEnabled, bool isReviewEnabled
-			, bool isInProgressEnabled, bool isExecReqEnabled, bool isFinished)
+			, bool isInProgressEnabled, bool isExecReqEnabled, bool isFinished, bool isUserLinked)
 			: this(tasks)
 		{
 			this.FilterText = FilterText;
@@ -30,6 +31,7 @@ namespace TaskManagement.ViewModels
 			this.isInProgressEnabled = isInProgressEnabled;
 			this.isExecReqEnabled = isExecReqEnabled;
 			this.isFinished = isFinished;
+			this.isUserLinked = isUserLinked;
 		}
 
 		public TaskFilterViewModel(IEnumerable<Task?> tasks)
@@ -48,6 +50,7 @@ namespace TaskManagement.ViewModels
 			this.isInProgressEnabled = true;
 			this.isFinished = true;
 			this.isExecReqEnabled = true;
+			this.isUserLinked = false;
 		}
 	}
 }

@@ -1,77 +1,201 @@
 ﻿@using TaskManagement.Data.Enums
-@model IEnumerable<TaskManagement.Models.Task>
+@model TaskManagement.ViewModels.TaskFilterViewModel
+
 
 @{
-	ViewData["Title"] = "Формирование отчета";
+	ViewData["Title"] = "Список задач";
 }
 
+@if (User.Identity.IsAuthenticated)
+{
+	@if ((User.IsInRole("Admin")
+|| User.IsInRole("Moderator")))
+	{
+		<a type="button" class="btn btn-outline-info" style="margin-left: 1rem" asp-action="Create" asp-controller="Tasks">Создать задачу</a>
+	}
 
-<form asp-action="FormReportUser">
-	<div class="row border border-success" style="margin: 2rem; border-radius: 15px">
-		<div class="m-2">
-			<div style="margin-right: 1rem">
-				<input type="checkbox" id="HighPriorityCheck" value="true" name="highPriority" />
-				<input name="highPriority" type="hidden" value="false"/>
-				<label>Задачи с высоким приоритетом</label>
-			</div>
-			<div style="margin-right: 1rem">
-				<input type="checkbox" value="true" name="mediumPriority" />
-				<input name="mediumPriority" type="hidden" value="false" />
-				<label>Задачи со средним приоритетом</label>
-			</div>
-			<div style="margin-right: 1rem" >
-				<input type="checkbox" value="true" name="LowPriority" />
-				<input name="LowPriority" type="hidden" value="false" />
-				<label>Задачи с низким приоритетом</label>
-			</div>
-			<div style="margin-right: 1rem">
-				<input type="checkbox" value="true" name="isReview" />
-				<input name="isReview" type="hidden" value="false" />
-				<label>Задачи на этапе Review</label>
-			</div>
-			<div style="margin-right: 1rem">
-				<input type="checkbox" value="true" name="isInProgress" />
-				<input name="isInProgress" type="hidden" value="false" />
-				<label>Задачи на этапе InProgress</label>
-			</div>
-			<div style="display:inline-block; margin-right: 1rem">
-				<input type="checkbox" value="true" name="isExecRequired" />
-				<input name="isExecRequired" type="hidden" value="false" />
-				<label>Задачи на этапе ExecutorRequired</label>
-			</div>
-		</div>
-		<button type="submit" class="btn btn-outline-success" style="border-bottom-left-radius: 15px; border-bottom-right-radius:15px">Сформировать отчет</button>
-	</div>
-</form>
+	<div class="mt-4">
+		<div class="container card shadow-sm " style="border-radius:15px">
+			<div class="row">
+				<div class="Filters col" style="padding-left: 0px">
+					<div class="card bg-light bg-body-teriary h-100" style="border-top-left-radius: 15px; border-bottom-left-radius: 15px">
+						<div class="card-body">
+							<form asp-action="SearchTask">
+								<div style="margin-right: 1rem; margin-bottom: 5px">
+									<input class="w-100" type="text" id="FilterText" name="FilterText" placeholder="Название задачи" value="@Model.FilterText" style="border-radius:7px" />
+								</div>
+								<div style="margin-right: 1rem; margin-bottom: 5px">
+									@*я знаю что это ужас, но у меня нет времени узнать как это сделать по-человечески*@
+									@if (Model.HighPriorityEnabled)
+									{
+										<input type="checkbox" id="HighPriorityCheck" value="true" name="highPriority" checked="checked" />
+									}
+									@if (!Model.HighPriorityEnabled)
+									{
+										<input type="checkbox" id="HighPriorityCheck" value="true" name="highPriority" />
+									}
+									<input name="highPriority" type="hidden" value="false" />
+									<label>Задачи с высоким приоритетом</label>
+								</div>
+								<div style="margin-right: 1rem; margin-bottom: 5px">
+									@if (Model.MediumPriorityEnabled)
+									{
+										<input type="checkbox" value="true" id="MediumPriority" name="mediumPriority" checked="checked" />
+									}
+									@if (!Model.MediumPriorityEnabled)
+									{
+										<input type="checkbox" value="true" id="MediumPriority" name="mediumPriority" />
+									}
+									<input name="mediumPriority" type="hidden" value="false" />
+									<label>Задачи со средним приоритетом</label>
+								</div>
+								<div style="margin-right: 1rem; margin-bottom: 5px">
+									@if (Model.LowPriorityEnabled)
+									{
+										<input type="checkbox" value="true" id="LowPriority" name="LowPriority" checked="checked" />
+									}
+									@if (!Model.LowPriorityEnabled)
+									{
+										<input type="checkbox" value="true" id="LowPriority" name="LowPriority" />
+									}
+									<input name="LowPriority" type="hidden" value="false" />
+									<label>Задачи с низким приоритетом</label>
+								</div>
+								<div style="margin-right: 1rem; margin-bottom: 5px">
+									@if (Model.isReviewEnabled)
+									{
+										<input type="checkbox" value="true" id="isReview" name="isReview" checked="checked" />
+									}
+									@if (!Model.isReviewEnabled)
+									{
+										<input type="checkbox" value="true" id="isReview" name="isReview" />
+									}
+									<input name="isReview" type="hidden" value="false" />
+									<label>Задачи на этапе "На обозрении"</label>
+								</div>
+								<div style="margin-right: 1rem; margin-bottom: 5px">
+									@if (Model.isInProgressEnabled)
+									{
+										<input type="checkbox" value="true" id="isInProgress" name="isInProgress" checked="checked" />
+									}
+									@if (!Model.isInProgressEnabled)
+									{
+										<input type="checkbox" value="true" id="isInProgress" name="isInProgress" />
+									}
+									<input name="isInProgress" type="hidden" value="false" />
+									<label>Задачи на этапе "В работе"</label>
+								</div>
+								<div style="margin-right: 1rem; margin-bottom: 5px">
+									@if (Model.isExecReqEnabled)
+									{
+										<input type="checkbox" value="true" name="isExecRequired" checked="checked" />
+									}
+									@if (!Model.isExecReqEnabled)
+									{
+										<input type="checkbox" value="true" name="isExecRequired" />
+									}
+									<input name="isExecRequired" type="hidden" value="false" />
+									<label>Задачи на этапе "Требуется исполнитель"</label>
+								</div>
+								<div style="margin-right: 1rem; margin-bottom: 5px">
+									@if (Model.isFinished)
+									{
+										<input type="checkbox" value="true" id="isFinished" name="isFinished" checked="checked" />
+									}
+									@if (!Model.isFinished)
+									{
+										<input type="checkbox" value="true" id="isFinished" name="isFinished" />
+									}
+									<input name="isFinished" type="hidden" value="false" />
+									<label>Задачи на этапе "Выполнена"</label>
+								</div>
+								<div style="margin-right: 1rem; margin-bottom: 5px">
+									@if (Model.isUserLinked)
+									{
+										<input type="checkbox" value="true" id="isUserLinked" name="isUserLinked" checked="checked" />
+									}
+									@if (!Model.isUserLinked)
+									{
+										<input type="checkbox" value="true" id="isUserLinked" name="isUserLinked" />
+									}
+									<input name="isUserLinked" type="hidden" value="false" />
+									<label>Связанные со мной</label>
+								</div>
+								<button type="submit" class="btn btn-outline-primary w-100" style="margin-right: 1rem; margin-bottom: 5px; border-radius:7px">Отфильтровать</button>
+								<input type="button" id="GetReportBtn" value="Сформировать отчет" class="btn btn-primary w-100" style="border-radius:7px"
+											 onclick="location.href='@Url.Action("FormReportUser", "Tasks"
+								, new { filterText = Model.FilterText ,highPriority = Model.HighPriorityEnabled
+									, mediumPriority = Model.MediumPriorityEnabled, LowPriority = Model.LowPriorityEnabled
+									, isReview = Model.isReviewEnabled, isInProgress = Model.isInProgressEnabled
+									, isExecRequired = Model.isExecReqEnabled, isFinished = Model.isFinished, isUserLinked = Model.isUserLinked})'" />
+							</form>
+						</div>
+					</div>
+				</div>
+				<div class="Tasks col-sm-9" style="padding-right: 0px">
+					<div class="card bg-light h-100" style="border-top-right-radius: 15px; border-bottom-right-radius: 15px">
+						<div class="card-body">
+							<div class="py-2 bg-body-teriary">
+								<div class="container">
+									<div class="row row-cols-md-3 g-3">
+										@foreach (var item in Model.Tasks)
+										{
+											<div class="col">
+												<div class="container d-flex justify-content-center mt-1">
+													<div class="card shadow-sm mt-3 w-100" style="background-color: #fff; border-radius: 15px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+														<div class="card-header py-3" style="border-top-left-radius: 15px; border-top-right-radius: 15px">
+															<h3 class="my-0 fw-normal">@item.Name</h3>
+														</div>
+														<div class="card-body">
+															<a href="@Url.Action("Details","Tasks",new{ id = item.Id})" class="stretched-link"></a>
+															<span class="d-inline-block text-truncate pb-2" style="max-width: 85%;">@item.Description</span>
+															<div class="d-flex justify-content-between align-items-center">
+																<div class="btn-group">
+																	@if (item.Priority == Priority.High)
+																	{
+																		<small class="text-body-secondary badge rounded-pill bg-danger">Высокий</small>
+																	}
+																	@if (item.Priority == Priority.Medium)
+																	{
 
+																		<small class="text-body-secondary badge rounded-pill bg-warning">Средний</small>
+																	}
+																	@if (item.Priority == Priority.Low)
+																	{
+																		<small class="text-body-secondary badge rounded-pill bg-success">Низкий</small>
+																	}
 
-<div class="py-2 bg-body-tertiary">
-	<div class="container">
-		<div class="row row-cols-md-4 g-3">
-			@foreach(var item in Model)
-			{
-				<div class="col">
-					<div class="container d-flex justify-content-center mt-1">
-						<div class="card shadow-sm mt-3 w-100" style="background-color: #fff; border-radius: 15px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
-							<div class="card-header py-3" style="border-top-left-radius: 15px; border-top-right-radius: 15px">
-								<h3 class="my-0 fw-normal">@item.Name</h3>
-							</div>
-							<div class="card-body">
-								<span class="d-inline-block text-truncate pb-2" style="max-width: 85%;">@item.Description</span>
-								@*<p class="card-text">@item.Description</p>*@
-								<a type="button" class="w-100 btn btn-sm btn-outline-primary" style="margin-bottom: 2px; margin-top: 2px;" asp-controller="Tasks" asp-action="Details" asp-route-id="@item.Id">Изменить</a>
-								@if(User.IsInRole("Admin") || User.IsInRole("Moderator"))
-								{
-									<a type="button" class="w-100 btn btn-sm btn-outline-danger" style="margin-bottom: 2px; margin-top: 2px;" asp-controller="Tasks" asp-action="Details" asp-route-id="@item.Id">Удалить</a>
-								}
+																	@if (item.Status == Status.InProgress)
+																	{
+																		<small class="text-body-secondary badge rounded-pill bg-warning">В процессе</small>
+																	}
+																	@if (item.Status == Status.ExecutorRequired)
+																	{
+																		<small class="text-body-secondary badge rounded-pill bg-danger">Не начата</small>
+																	}
+																	@if (item.Status == Status.Finished)
+																	{
+																		<small class="text-body-secondary badge rounded-pill bg-success">Выполнена</small>
+																	}
+																	@if (item.Status == Status.Review)
+																	{
+																		<small class="text-body-secondary badge rounded-pill bg-warning">На обозрении</small>
+																	}
+																</div>
+															</div>
+															@*<p class="card-text">@item.Description</p>*@
+														</div>
+													</div>
+												</div>
+											</div>
+										}
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			}
+			</div>
 		</div>
 	</div>
-</div>
-
-<script>
-</script>
+}

@@ -23,8 +23,31 @@ namespace TaskManagement.Controllers
     public async Task<IActionResult> Index()
     {
       var allUsers = await _usersRepos.GetAllAsync();
-      return View(allUsers);
+      var usersFilterVM = new UserFilterViewModel(allUsers);
+      return View(usersFilterVM);
     }
+
+    [HttpPost]
+    public async Task<IActionResult> Index(string filterName, bool isAdmin, bool isModer, bool isDefault)
+    {
+
+			var allUsers = await _usersRepos.GetAllAsync();
+
+      if ((filterName != null)
+        && filterName != string.Empty)
+        allUsers = allUsers.Where((k) => k.Username.Contains(filterName));
+
+      if (!isAdmin)
+        allUsers = allUsers.Where((k) => k.Role != Data.Enums.Role.Admin);
+      if (!isModer)
+        allUsers = allUsers.Where((k) => k.Role != Data.Enums.Role.Moderator);
+      if (!isDefault)
+        allUsers = allUsers.Where((k) => k.Role != Data.Enums.Role.Default);
+
+      var usersFilterVM = new UserFilterViewModel(allUsers, filterName == null ? string.Empty : filterName, isAdmin, isModer, isDefault);
+
+			return View(usersFilterVM);
+		}
 
 
     /// <summary>

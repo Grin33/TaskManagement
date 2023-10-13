@@ -28,6 +28,6 @@ namespace TaskManagement.Data.Interfaces
 		/// </summary>
 		/// <param name="userId"></param>
 		/// <returns></returns>
-		Task<List<Models.Task?>> GetLinkedTasksAsync(Guid userId);
+		Task<IEnumerable<Models.Task?>> GetLinkedTasksAsync(Guid userId);
   }
 }

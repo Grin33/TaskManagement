@@ -67,7 +67,7 @@ namespace TaskManagement.Data.Repositories
     /// </summary>
     /// <param name="userId">Id пользователя</param>
     /// <returns>Список задач</returns>
-		public async Task<List<Models.Task?>> GetLinkedTasksAsync(Guid userId)
+		public async Task<IEnumerable<Models.Task?>> GetLinkedTasksAsync(Guid userId)
 		{
       var tasks = await GetAllExeByIdAsync(userId);
       tasks.AddRange(await GetAllRevByIdAsync(userId));

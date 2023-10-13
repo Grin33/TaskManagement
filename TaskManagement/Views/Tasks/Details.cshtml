@@ -2,7 +2,7 @@
 @model TaskManagement.ViewModels.TaskDetailsViewModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Информация о задаче";
 }
 
 <div class="container card p-2" style="border-radius: 15px">
@@ -113,7 +113,7 @@
           @foreach (var comment in Model.CommentDetails)
           {
             <div class="row pt-2">
-              <label style="font-weight: lighter; padding-left: 1px">@comment.CreatedAt</label>
+              <label style="font-weight: lighter; padding-left: 7px">@comment.CreatedAt</label>
               <div class="container-fluid" style="">
                 <label style="font-weight: bold">@comment.Author.Username :</label>
                 <label style="padding-left: 5px">@comment.Message</label>
