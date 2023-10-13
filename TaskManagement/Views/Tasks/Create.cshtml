@@ -10,26 +10,26 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="currentTask.Name" class="control-label"></label>
-                <input asp-for="currentTask.Name" class="form-control" />
-                <span asp-validation-for="currentTask.Name" class="text-danger"></span>
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="currentTask.Description" class="control-label"></label>
-                <input asp-for="currentTask.Description" class="form-control" />
-                <span asp-validation-for="currentTask.Description" class="text-danger"></span>
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="currentTask.Priority" class="control-label"></label>
-                <select asp-for="currentTask.Priority" class="form-control"
+                <label asp-for="Priority" class="control-label"></label>
+                <select asp-for="Priority" class="form-control"
                         asp-items="@(Html.GetEnumSelectList<Priority>())"></select>
-                <span asp-validation-for="currentTask.Priority" class="text-danger"></span>
+                <span asp-validation-for="Priority" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="currentTask.Status" class="control-label"></label>
-                <select asp-for="currentTask.Status" class="form-control"
+                <label asp-for="Status" class="control-label"></label>
+                <select asp-for="Status" class="form-control"
                         asp-items="@(Html.GetEnumSelectList<Status>())"></select>
-                <span asp-validation-for="currentTask.Status" class="text-danger"></span>
+                <span asp-validation-for="Status" class="text-danger"></span>
             </div>
             <div class="row mb-3">
                 <label class="col-sm-3 col-form-label" asp-for="currentExecutors">Executors</label>
@@ -52,9 +52,9 @@
                 </div>
             </div>
             <div class="form-group">
-                <label asp-for="currentTask.DeadLine" class="control-label"></label>
-                <input asp-for="currentTask.DeadLine" class="form-control" />
-                <span asp-validation-for="currentTask.DeadLine" class="text-danger"></span>
+                <label asp-for="DeadLine" class="control-label"></label>
+                <input asp-for="DeadLine" class="form-control" />
+                <span asp-validation-for="DeadLine" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

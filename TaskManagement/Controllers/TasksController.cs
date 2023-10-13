@@ -112,7 +112,7 @@ namespace TaskManagement.Controllers
     public async Task<IActionResult> Create(TaskEditViewModel model)
     {
       var toAdd = new Models.Task();
-      toAdd = model.currentTask;
+      //toAdd = model.currentTask;
       if (toAdd == null)
         throw new NullReferenceException();
 
@@ -183,11 +183,12 @@ namespace TaskManagement.Controllers
     [HttpPost]
     public async Task<IActionResult> Edit(TaskEditViewModel model)
     {
-      var toUpdate = await _tasksRepos.GetByIdAsync(model.currentTask.Id);
+      var toUpdate = await _tasksRepos.GetByIdAsync(model.Id);
 
       if (toUpdate == null)
         return RedirectToAction("Error", "Home");
 
+      //весь код ниже определяет выбранных пользователей в наблюдатели и исполнители
       var newRevList = new List<User?>();
       if (model.currentReviewers == null)
         newRevList = new List<User?>();
@@ -209,7 +210,7 @@ namespace TaskManagement.Controllers
         }
 
       //весь последующий код реализован для избежания ошибочных отправлений писем
-      var oldLinkedUsers = await _tasksRepos.GetLinkedUsers(model.currentTask.Id);
+      var oldLinkedUsers = await _tasksRepos.GetLinkedUsers(model.Id);
       var newLinkedUsers = new List<User?>(newRevList);
       newLinkedUsers.AddRange(newExecList);
 
@@ -222,13 +223,14 @@ namespace TaskManagement.Controllers
 
       //если закидывать в update model.currentTask - выкидывает ошибку, что таска с данным ID уже отслеживается
       //Если изменится ссылка, то выкидывает ошибку. не могу придумать как сделать
-      toUpdate.Name = model.currentTask.Name;
-      toUpdate.Description = model.currentTask.Description;
-      toUpdate.Status = model.currentTask.Status;
-      toUpdate.Priority = model.currentTask.Priority;
-      toUpdate.DeadLine = model.currentTask.DeadLine;
+      toUpdate.Name = model.Name;
+      toUpdate.Description = model.Description;
+      toUpdate.Status = model.Status;
+      toUpdate.Priority = model.Priority;
+      toUpdate.DeadLine = model.DeadLine;
       toUpdate.Executors = newExecList == null ? new List<User?>() : newExecList;
       toUpdate.Reviewers = newRevList == null ? new List<User?>() : newRevList;
+
       var update = _tasksRepos.Update(toUpdate);
 
       if (!update) return View("Error");
