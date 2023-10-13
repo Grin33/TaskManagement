@@ -34,7 +34,10 @@ namespace TaskManagement.Controllers
     /// <returns></returns>
     public async Task<IActionResult> Index()
     {
-
+      if (!User.Identity.IsAuthenticated)
+      {
+        return RedirectToAction("Index", "Home");
+      }
       var currentId = Guid.Parse(User.Claims.Where(k => k.Type == "Id").FirstOrDefault().Value);
       var allTasks = await _usersRepos.GetLinkedTasksAsync(currentId);
 

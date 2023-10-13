@@ -32,13 +32,16 @@
         <p>@Model.CreatedAt</p>
       </div>
     </div>
-    @if ((User.IsInRole("Admin")) || (User.IsInRole("Moderator")) || (Model.Id == Guid.Parse(User.Claims.Where(k => k.Type == "Id").FirstOrDefault().Value)))
+    @if(User.Identity.IsAuthenticated)
     {
-      <a type="button" class="w-100 btn btn-lg btn-outline-primary" asp-controller="Users" asp-action="Edit" asp-route-id="@Model.Id">Изменить</a>
-    }
-    @if((User.IsInRole("Admin")))
-    {
-      <a type="button" class="w-100 btn btn-lg btn-outline-danger" asp-controller="Users" asp-action="Delete" asp-route-id="@Model.Id">Удалить</a>
+      @if ((User.IsInRole("Admin")) || (User.IsInRole("Moderator")) || (Model.Id == Guid.Parse(User.Claims.Where(k => k.Type == "Id").FirstOrDefault().Value)))
+      {
+        <a type="button" class="w-100 btn btn-lg btn-outline-primary" asp-controller="Users" asp-action="Edit" asp-route-id="@Model.Id">Изменить</a>
+      }
+      @if ((User.IsInRole("Admin")))
+      {
+        <a type="button" class="w-100 btn btn-lg btn-outline-danger" asp-controller="Users" asp-action="Delete" asp-route-id="@Model.Id">Удалить</a>
+      }
     }
   </div>
 </div>
