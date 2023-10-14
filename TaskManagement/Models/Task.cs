@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using TaskManagement.Data.Enums;
 using TaskManagement.Data.Interfaces;
+using TaskManagement.ViewModels;
 
 namespace TaskManagement.Models
 {
@@ -42,7 +42,7 @@ namespace TaskManagement.Models
     [Required]
     [Display(Name = "Статус")]
     public Status Status { get; set; }
-    
+
     /// <summary>
     /// Дата завершения задачи
     /// </summary>
@@ -57,7 +57,7 @@ namespace TaskManagement.Models
     [Required]
     [Display(Name = "Наблюдатели")]
     public List<User?> Reviewers { get; set; } = new();
-    
+
     /// <summary>
     /// Исполнители задачи
     /// </summary>
@@ -74,6 +74,17 @@ namespace TaskManagement.Models
     public Task()
     {
 
+    }
+
+    public Task(TaskEditViewModel taskVM)
+    {
+      this.Name = taskVM.Name;
+      this.Description = taskVM.Description;
+      this.Status = taskVM.Status;
+      this.Priority = taskVM.Priority;
+      this.DeadLine = taskVM.DeadLine;
+      this.Executors = taskVM.Executors;
+      this.Comments = taskVM.Comments;
     }
   }
 }

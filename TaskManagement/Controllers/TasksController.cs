@@ -137,7 +137,7 @@ namespace TaskManagement.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Create(TaskEditViewModel model)
 		{
-			var toAdd = new Models.Task();
+			var toAdd = new Models.Task(model);
 			//toAdd = model.currentTask;
 			if (toAdd == null)
 				throw new NullReferenceException();

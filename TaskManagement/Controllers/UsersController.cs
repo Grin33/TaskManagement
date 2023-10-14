@@ -116,6 +116,7 @@ namespace TaskManagement.Controllers
     /// <param name="id"></param>
     /// <returns></returns>
     /// <exception cref="NullReferenceException"></exception>
+    [HttpGet]
     public async Task<IActionResult> Delete(Guid? id)
     {
       if (id == null)
@@ -126,7 +127,7 @@ namespace TaskManagement.Controllers
       if (userToDelete == null)
         return NotFound();
 
-      return View("Index");
+      return View(userToDelete);
     }
 
     /// <summary>
@@ -147,7 +148,10 @@ namespace TaskManagement.Controllers
       var res = _usersRepos.Delete(userToDelete);
       if (!res)
         throw new Exception("Произошла ошибка при удалении записи");
-      return View("Index");
+
+      var allUsers = await _usersRepos.GetAllAsync();
+      var usersFilterVM = new UserFilterViewModel(allUsers);
+      return View("Index", usersFilterVM);
     }
   }
 }
