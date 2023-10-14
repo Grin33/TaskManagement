@@ -79,12 +79,12 @@ namespace TaskManagement.Controllers
 		public async Task<IActionResult> Details(Guid? id)
 		{
 			if (id == null)
-				return RedirectToAction("Error", "Home");
+				throw new NullReferenceException("Передан null параметр");
 
 			var currentTask = await _tasksRepos.GetByIdAsync(id.Value);
 
 			if (currentTask == null)
-				return RedirectToAction("Error", "Home");
+        throw new NullReferenceException("Задача не найдена");
 
 			var TaskView = new TaskDetailsViewModel(currentTask);
 
@@ -146,7 +146,7 @@ namespace TaskManagement.Controllers
 			{
 				var tempUser = await _usersRepos.GetByIdAsync(Guid.Parse(item));
 				if (tempUser == null)
-					return RedirectToAction("Error", "Home");
+					throw new NullReferenceException("Пользователь не определен");
 				tempUser.Executors.Add(toAdd);
 				_usersRepos.Update(tempUser);
 				toAdd.Executors.Add(tempUser);
@@ -155,14 +155,14 @@ namespace TaskManagement.Controllers
 			{
 				var tempUser = await _usersRepos.GetByIdAsync(Guid.Parse(item));
 				if (tempUser == null)
-					return RedirectToAction("Error", "Home");
-				tempUser.Reviewers.Add(toAdd);
+          throw new NullReferenceException("Пользователь не определен");
+        tempUser.Reviewers.Add(toAdd);
 				_usersRepos.Update(tempUser);
 				toAdd.Reviewers.Add(tempUser);
 			}
 			var add = _tasksRepos.Update(toAdd);
 
-			if (!add) return View("Error");
+			if (!add) throw new Exception("Не удалось создать задачу"));
 
 			return RedirectToAction("Index", "Home");
 		}
@@ -179,7 +179,7 @@ namespace TaskManagement.Controllers
 				return RedirectToAction("Index", "Home");
 
 			if (id == null)
-				return RedirectToAction("Error", "Home");
+				throw new NullReferenceException("Передан null параметр");
 
 			var currentTask = await _tasksRepos.GetByIdAsync(id.Value);
 			if (currentTask is null)
@@ -212,10 +212,10 @@ namespace TaskManagement.Controllers
 			var toUpdate = await _tasksRepos.GetByIdAsync(model.Id);
 
 			if (toUpdate == null)
-				return RedirectToAction("Error", "Home");
+        throw new NullReferenceException("Передан null параметр");
 
-			//весь код ниже определяет выбранных пользователей в наблюдатели и исполнители
-			var newRevList = new List<User?>();
+      //весь код ниже определяет выбранных пользователей в наблюдатели и исполнители
+      var newRevList = new List<User?>();
 			if (model.currentReviewers == null)
 				newRevList = new List<User?>();
 			else
@@ -258,7 +258,7 @@ namespace TaskManagement.Controllers
 
 			var update = _tasksRepos.Update(toUpdate);
 
-			if (!update) return View("Error");
+			if (!update) throw new Exception("Не удалось обновить задачу");
 
 			return RedirectToAction("Index", "Home");
 		}
@@ -271,9 +271,9 @@ namespace TaskManagement.Controllers
 		public async Task<IActionResult> Delete(Guid? id)
 		{
 			if (id == null)
-				return RedirectToAction("Error", "Home");
+        throw new NullReferenceException("Передан null параметр");
 
-			var byIdAsync = await _tasksRepos.GetByIdAsync(id.Value);
+      var byIdAsync = await _tasksRepos.GetByIdAsync(id.Value);
 
 
 
@@ -296,15 +296,15 @@ namespace TaskManagement.Controllers
 
 			var toDelete = await _tasksRepos.GetByIdAsync(id);
 			if (toDelete == null)
-				return RedirectToAction("Error", "Home");
+        throw new NullReferenceException("Не удалось определить задачу");
 
-			var usersToEmail = await _tasksRepos.GetLinkedUsers(id);
+      var usersToEmail = await _tasksRepos.GetLinkedUsers(id);
 
 			EmailService.sendEmailToUsers(usersToEmail, toDelete, Data.Enums.Reason.Delete);
 
 			var delete = _tasksRepos.Delete(toDelete);
 
-			if (!delete) return View("Error");
+			if (!delete) throw new Exception("Не удалось удалить задачу");
 
 			return RedirectToAction("Index", "Home");
 		}
@@ -366,36 +366,6 @@ namespace TaskManagement.Controllers
 					 , $"{User.Identity.Name}_TasksReport_{DateTime.Now.ToString("mmHHMMyyyy")}.pdf");
 
 		}
-
-		//[HttpGet]
-		//public async Task<IActionResult> SearchTask()
-		//{
-		//	if (User.Identity.IsAuthenticated)
-		//	{
-		//		var tasks = await _tasksRepos.GetAllAsync();
-		//		var taskFilterVM = new TaskFilterViewModel(tasks);
-		//		return View(taskFilterVM);
-		//	}
-		//	else
-		//	{
-		//		return RedirectToAction("Index", "Home");
-		//	}
-		//}
-
-
-		//public async Task<IActionResult> SearchTask(string FilterText, bool highPriority, bool mediumPriority
-		//						, bool LowPriority, bool isReview, bool isInProgress, bool isExecRequired, bool isFinished, bool isUserLinked)
-		//{
-
-		//	var tasks = await GetTasksWithFilter(FilterText, highPriority, mediumPriority
-		//						, LowPriority, isReview, isInProgress, isExecRequired, isFinished, isUserLinked);
-
-		//	var taskFilterVM = new TaskFilterViewModel
-		//		(tasks, FilterText, highPriority, mediumPriority,
-		//		LowPriority, isReview, isInProgress, isExecRequired, isFinished, isUserLinked);
-		//	return View(taskFilterVM);
-		//}
-
 
 		/// <summary>
 		/// Метод, позволяющий отфильтровать задачи по входным фильтрам

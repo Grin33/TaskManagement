@@ -98,37 +98,3 @@
 		</div>
 	</div>
 </div>
-
-@*
-<div class="mt-2">
-	<div class="album py-5 bg-body-teriary">
-		<div class="container">
-			<div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3">
-				@foreach(var user in Model.Users)
-				{
-					<div class="col" >
-						<div class="container d-flex justify-content-center mt-5">
-							<div class="card col-lg-4 col-md-6 col-sm-12 mt-3" style="background-color: #fff; width: 280px; border-radius: 33px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);padding: 2rem !important;">
-								<a href="@Url.Action("Details","Users",new{ id = user.Id})" class="stretched-link"></a>
-								<div class="top-container" style="display:flex; align-items: center;">
-									<img src="https://i.imgur.com/hepj9ZS.png" class="img-fluid profile-image" style="border-radius:10px; border:2px solid #0d6efd" width="82">
-									<div class="" style="padding-left: 10px">
-										<h5 class="name d-inline-block text-truncate" style="max-width: 150px; position:relative; top:8px; font-size: 15px; font-weight:bold;">@user.Username</h5>
-										<p class="mail d-inline-block text-truncate" style="max-width: 150px; font-size: 14px; color:grey; top:2px; position:relative; margin-bottom: 0.5rem; display: inline-block; height: 20px;">@user.Email</p>
-										<span class=" px-4 rounded text-white" style="background-color: grey; position:relative;">@user.Role</span>
-									</div>
-								</div>
-								<span class="d-inline-block text-truncate" style="max-width: 200px; padding-top: 5px">@user.Information</span>
-								<div class="d-flex justify-content-between align-items-center" style="padding-top: 10px">
-									<div class="btn-group; position-relative">
-									</div>
-								</div>
-							</div>
-
-						</div>
-					</div>
-				}
-			</div>
-		</div>
-	</div>
-</div>*@

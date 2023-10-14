@@ -105,7 +105,7 @@ namespace TaskManagement.Controllers
         updateResult = _usersRepos.Update(user);
 
       if (!updateResult)
-        return View("Error");
+        throw new Exception("Не удалось обновить данные о пользователе");
 
       return RedirectToAction("Index");
     }
