@@ -1,4 +1,5 @@
 ﻿using TaskManagement.Models;
+using TaskManagement.Structs;
 
 namespace TaskManagement.ViewModels
 {
@@ -6,29 +7,18 @@ namespace TaskManagement.ViewModels
 	{
 		public IEnumerable<User?> Users { get; set; }
 
-		public string FilterName { get; set; }
+		public UserFilterStruct Filters { get; set; }
 
-		public bool isAdmin { get; set; }
-		public bool isModer { get; set; }
-		public bool isDefault { get; set; }
-
-		public UserFilterViewModel(IEnumerable<User?> users, string filterName
-														, bool isAdmin, bool isModer, bool isDefault)
+		public UserFilterViewModel(IEnumerable<User?> users, UserFilterStruct Filters)
+			: this(users)
 		{
-			this.Users = users;
-			this.FilterName = filterName;
-			this.isDefault = isDefault;
-			this.isModer = isModer;
-			this.isAdmin = isAdmin;
+			this.Filters = Filters;
 		}
 
 		public UserFilterViewModel(IEnumerable<User?> users)
 		{
 			this.Users = users;
-			this.isModer = true;
-			this.isDefault = true;
-			this.isAdmin = true;
-			this.FilterName = string.Empty;
+			this.Filters = new UserFilterStruct();
 		}
 	}
 }

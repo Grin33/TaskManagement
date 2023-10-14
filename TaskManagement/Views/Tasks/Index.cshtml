@@ -1,4 +1,6 @@
-﻿@using TaskManagement.Data.Enums
+﻿@using System.Web
+@using TaskManagement.Data.Enums
+@using TaskManagement.Structs;
 @model TaskManagement.ViewModels.TaskFilterViewModel
 
 
@@ -20,17 +22,17 @@
 				<div class="Filters col" style="padding-left: 0px">
 					<div class="card bg-light bg-body-teriary h-100" style="border-top-left-radius: 15px; border-bottom-left-radius: 15px">
 						<div class="card-body">
-							<form asp-action="SearchTask">
+							<form asp-action="Index">
 								<div style="margin-right: 1rem; margin-bottom: 5px">
-									<input class="w-100" type="text" id="FilterText" name="FilterText" placeholder="Название задачи" value="@Model.FilterText" style="border-radius:7px" />
+									<input class="w-100" type="text" id="FilterText" name="FilterText" placeholder="Название задачи" value="@Model.Filters.FilterText" style="border-radius:7px" />
 								</div>
 								<div style="margin-right: 1rem; margin-bottom: 5px">
 									@*я знаю что это ужас, но у меня нет времени узнать как это сделать по-человечески*@
-									@if (Model.HighPriorityEnabled)
+									@if (Model.Filters.HighPriorityEnabled)
 									{
 										<input type="checkbox" id="HighPriorityCheck" value="true" name="highPriority" checked="checked" />
 									}
-									@if (!Model.HighPriorityEnabled)
+									@if (!Model.Filters.HighPriorityEnabled)
 									{
 										<input type="checkbox" id="HighPriorityCheck" value="true" name="highPriority" />
 									}
@@ -38,11 +40,11 @@
 									<label>Задачи с высоким приоритетом</label>
 								</div>
 								<div style="margin-right: 1rem; margin-bottom: 5px">
-									@if (Model.MediumPriorityEnabled)
+									@if (Model.Filters.MediumPriorityEnabled)
 									{
 										<input type="checkbox" value="true" id="MediumPriority" name="mediumPriority" checked="checked" />
 									}
-									@if (!Model.MediumPriorityEnabled)
+									@if (!Model.Filters.MediumPriorityEnabled)
 									{
 										<input type="checkbox" value="true" id="MediumPriority" name="mediumPriority" />
 									}
@@ -50,11 +52,11 @@
 									<label>Задачи со средним приоритетом</label>
 								</div>
 								<div style="margin-right: 1rem; margin-bottom: 5px">
-									@if (Model.LowPriorityEnabled)
+									@if (Model.Filters.LowPriorityEnabled)
 									{
 										<input type="checkbox" value="true" id="LowPriority" name="LowPriority" checked="checked" />
 									}
-									@if (!Model.LowPriorityEnabled)
+									@if (!Model.Filters.LowPriorityEnabled)
 									{
 										<input type="checkbox" value="true" id="LowPriority" name="LowPriority" />
 									}
@@ -62,11 +64,11 @@
 									<label>Задачи с низким приоритетом</label>
 								</div>
 								<div style="margin-right: 1rem; margin-bottom: 5px">
-									@if (Model.isReviewEnabled)
+									@if (Model.Filters.isReviewEnabled)
 									{
 										<input type="checkbox" value="true" id="isReview" name="isReview" checked="checked" />
 									}
-									@if (!Model.isReviewEnabled)
+									@if (!Model.Filters.isReviewEnabled)
 									{
 										<input type="checkbox" value="true" id="isReview" name="isReview" />
 									}
@@ -74,11 +76,11 @@
 									<label>Задачи на этапе "На обозрении"</label>
 								</div>
 								<div style="margin-right: 1rem; margin-bottom: 5px">
-									@if (Model.isInProgressEnabled)
+									@if (Model.Filters.isInProgressEnabled)
 									{
 										<input type="checkbox" value="true" id="isInProgress" name="isInProgress" checked="checked" />
 									}
-									@if (!Model.isInProgressEnabled)
+									@if (!Model.Filters.isInProgressEnabled)
 									{
 										<input type="checkbox" value="true" id="isInProgress" name="isInProgress" />
 									}
@@ -86,23 +88,23 @@
 									<label>Задачи на этапе "В работе"</label>
 								</div>
 								<div style="margin-right: 1rem; margin-bottom: 5px">
-									@if (Model.isExecReqEnabled)
+									@if (Model.Filters.isExecReqEnabled)
 									{
-										<input type="checkbox" value="true" name="isExecRequired" checked="checked" />
+										<input type="checkbox" value="true" id="isExecRequired" name="isExecRequired" checked="checked" />
 									}
-									@if (!Model.isExecReqEnabled)
+									@if (!Model.Filters.isExecReqEnabled)
 									{
-										<input type="checkbox" value="true" name="isExecRequired" />
+										<input type="checkbox" value="true" id="isExecRequired" name="isExecRequired" />
 									}
 									<input name="isExecRequired" type="hidden" value="false" />
 									<label>Задачи на этапе "Требуется исполнитель"</label>
 								</div>
 								<div style="margin-right: 1rem; margin-bottom: 5px">
-									@if (Model.isFinished)
+									@if (Model.Filters.isFinished)
 									{
 										<input type="checkbox" value="true" id="isFinished" name="isFinished" checked="checked" />
 									}
-									@if (!Model.isFinished)
+									@if (!Model.Filters.isFinished)
 									{
 										<input type="checkbox" value="true" id="isFinished" name="isFinished" />
 									}
@@ -110,24 +112,30 @@
 									<label>Задачи на этапе "Выполнена"</label>
 								</div>
 								<div style="margin-right: 1rem; margin-bottom: 5px">
-									@if (Model.isUserLinked)
+									@if (Model.Filters.isUserLinked)
 									{
 										<input type="checkbox" value="true" id="isUserLinked" name="isUserLinked" checked="checked" />
 									}
-									@if (!Model.isUserLinked)
+									@if (!Model.Filters.isUserLinked)
 									{
 										<input type="checkbox" value="true" id="isUserLinked" name="isUserLinked" />
 									}
 									<input name="isUserLinked" type="hidden" value="false" />
 									<label>Связанные со мной</label>
 								</div>
+								@{
+									var oldfilters = new TaskFilterStruct(Model.Filters.FilterText,
+													Model.Filters.HighPriorityEnabled, Model.Filters.MediumPriorityEnabled,
+													Model.Filters.LowPriorityEnabled, Model.Filters.isReviewEnabled,
+													Model.Filters.isInProgressEnabled, Model.Filters.isExecReqEnabled,
+													Model.Filters.isFinished, Model.Filters.isUserLinked);
+									string serializedOldFilters = Newtonsoft.Json.JsonConvert.SerializeObject(oldfilters);
+
+								}
 								<button type="submit" class="btn btn-outline-primary w-100" style="margin-right: 1rem; margin-bottom: 5px; border-radius:7px">Отфильтровать</button>
 								<input type="button" id="GetReportBtn" value="Сформировать отчет" class="btn btn-primary w-100" style="border-radius:7px"
 											 onclick="location.href='@Url.Action("FormReportUser", "Tasks"
-								, new { filterText = Model.FilterText ,highPriority = Model.HighPriorityEnabled
-									, mediumPriority = Model.MediumPriorityEnabled, LowPriority = Model.LowPriorityEnabled
-									, isReview = Model.isReviewEnabled, isInProgress = Model.isInProgressEnabled
-									, isExecRequired = Model.isExecReqEnabled, isFinished = Model.isFinished, isUserLinked = Model.isUserLinked})'" />
+								, new { jsonStructure = serializedOldFilters})'" />
 							</form>
 						</div>
 					</div>
@@ -199,3 +207,28 @@
 		</div>
 	</div>
 }
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+	//ajax-запрос почему-то не отправляют корректные данные. Приходит вообще непонятно чего
+	$(document).ready(function () {
+		$("#FilterButton").click(function () {
+			var data = {
+				FilterText: document.getElementById("FilterText").value,
+				HighPriorityEnabled: document.getElementById("HighPriorityCheck").checked,
+				MediumPriorityEnabled: document.getElementById("MediumPriority").checked,
+				LowPriorityEnabled: document.getElementById("LowPriority").checked,
+				isReviewEnabled: document.getElementById("isReview").checked,
+				isInProgressEnabled: document.getElementById("isInProgress").checked,
+				isExecReqEnabled: document.getElementById("isExecRequired").checked,
+				isFinished: document.getElementById("isFinished").checked,
+				isUserLinked: document.getElementById("isUserLinked").checked,
+			};
+			$.ajax({
+				url: "/Tasks/Index",
+				type: "POST",
+				data: { jsonStructure: JSON.stringify(data) },
+				contentType: "application/json"
+			});
+		});
+	});
+</script>

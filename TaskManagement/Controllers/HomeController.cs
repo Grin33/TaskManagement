@@ -33,7 +33,8 @@ namespace TaskManagement.Controllers
       {
         return View("Index");
       }
-      var currentUserId = Guid.Parse(User.Claims.Where(k => k.Type == "Id").FirstOrDefault().Value);
+      var currentUserId = Guid.Parse(User.Claims.Where(k => k.Type == "Id")
+        .FirstOrDefault().Value);
       var userTasks = (await _usersRepos.GetLinkedTasksAsync(currentUserId)).ToList();
       userTasks.Sort(new TaskPriorityComparer<Models.Task?>());
       return View(userTasks);

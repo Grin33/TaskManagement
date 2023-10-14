@@ -13,14 +13,14 @@
 					<div class="card-body">
 						<form asp-action="Index">
 							<div style="margin-right: 1rem; margin-bottom: 5px">
-								<input class="w-100" type="text" name="filterName" placeholder="Имя" value="@Model.FilterName" style="border-radius:7px"/>
+								<input class="w-100" type="text" name="filterName" placeholder="Имя" value="@Model.Filters.FilterName" style="border-radius:7px" />
 							</div>
 							<div style="margin-right: 1rem; margin-bottom:5px">
-								@if(Model.isAdmin)
+								@if (Model.Filters.isAdmin)
 								{
 									<input type="checkbox" value="true" name="isAdmin" checked="checked" />
 								}
-								@if(!Model.isAdmin)
+								@if (!Model.Filters.isAdmin)
 								{
 									<input type="checkbox" value="true" name="isAdmin"/>
 								}
@@ -28,11 +28,11 @@
 								<label>Включать администраторов</label>
 							</div>
 							<div style="margin-right: 1rem; margin-bottom:5px">
-								@if(Model.isModer)
+								@if (Model.Filters.isModer)
 								{
 									<input type="checkbox" value="true" name="isModer" checked="checked" />
 								}
-								@if(!Model.isModer)
+								@if (!Model.Filters.isModer)
 								{
 									<input type="checkbox" value="true" name="isModer" />
 								}
@@ -40,11 +40,11 @@
 								<label>Включать модераторов</label>
 							</div>
 							<div style="margin-right: 1rem; margin-bottom:5px">
-								@if(Model.isDefault)
+								@if (Model.Filters.isDefault)
 								{
 									<input type="checkbox" value="true" name="isDefault" checked="checked" />
 								}
-								@if (!Model.isDefault)
+								@if (!Model.Filters.isDefault)
 								{
 									<input type="checkbox" value="true" name="isDefault" />
 								}

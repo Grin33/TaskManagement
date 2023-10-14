@@ -33,7 +33,8 @@ namespace TaskManagement.Services
 
         using (System.Net.Mail.SmtpClient client = new System.Net.Mail.SmtpClient("smtp.gmail.com")) 
         {
-          client.Credentials = new NetworkCredential("taskmanagementnotifier@gmail.com", "rxsm cmci qazj cnym");
+          client.Credentials = new NetworkCredential
+            ("taskmanagementnotifier@gmail.com", "rxsm cmci qazj cnym");
           client.Port = 587; //порт 587 либо 465
           client.EnableSsl = true;
 

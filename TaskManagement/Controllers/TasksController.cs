@@ -4,6 +4,7 @@ using TaskManagement.Data.Comparers;
 using TaskManagement.Data.Interfaces;
 using TaskManagement.Models;
 using TaskManagement.Services;
+using TaskManagement.Structs;
 using TaskManagement.ViewModels;
 
 namespace TaskManagement.Controllers
@@ -17,8 +18,8 @@ namespace TaskManagement.Controllers
 		private readonly ITasksRepository _tasksRepos;
 		private readonly ICommentRepository _commentsRepos;
 
-		public TasksController(IUsersRepository users, ITasksRepository tasks
-														, ICommentRepository comments)
+		public TasksController(IUsersRepository users, ITasksRepository tasks,
+			ICommentRepository comments)
 		{
 			_usersRepos = users;
 			_tasksRepos = tasks;
@@ -58,15 +59,18 @@ namespace TaskManagement.Controllers
 		/// <param name="isUserLinked">Включение только тех задач, которые связаны с пользователем</param>
 		/// <returns>Отфильтрованная коллекция задач</returns>
 		[HttpPost]
-		public async Task<IActionResult> Index(string FilterText, bool highPriority, bool mediumPriority
-								, bool LowPriority, bool isReview, bool isInProgress, bool isExecRequired, bool isFinished, bool isUserLinked)
+		public async Task<IActionResult> Index(string FilterText, bool highPriority,
+			bool mediumPriority, bool LowPriority, bool isReview, bool isInProgress,
+			bool isExecRequired, bool isFinished, bool isUserLinked /*[FromBody] TaskFilterStruct jsonStructure*/)
 		{
-			var tasks = await GetTasksWithFilter(FilterText, highPriority, mediumPriority
-								, LowPriority, isReview, isInProgress, isExecRequired, isFinished, isUserLinked);
+			var filters = new TaskFilterStruct(FilterText, highPriority,
+			 mediumPriority, LowPriority, isReview, isInProgress,
+			 isExecRequired, isFinished, isUserLinked);
+			//TaskFilterStruct Filters = Newtonsoft.Json.JsonConvert.DeserializeObject<TaskFilterStruct>(jsonStructure);
+			var tasks = await GetTasksWithFilter(filters);
 
 			var taskFilterVM = new TaskFilterViewModel
-				(tasks, FilterText, highPriority, mediumPriority,
-				LowPriority, isReview, isInProgress, isExecRequired, isFinished, isUserLinked);
+				(tasks, filters);
 			return View(taskFilterVM);
 		}
 
@@ -162,7 +166,7 @@ namespace TaskManagement.Controllers
 			}
 			var add = _tasksRepos.Update(toAdd);
 
-			if (!add) throw new Exception("Не удалось создать задачу"));
+			if (!add) throw new Exception("Не удалось создать задачу");
 
 			return RedirectToAction("Index", "Home");
 		}
@@ -335,26 +339,17 @@ namespace TaskManagement.Controllers
 
 		/// <summary>
 		/// Post-запрос получения отчета
-		/// </summary> 
-		/// <param name="filterText">Фильтрация по названию</param>
-		/// <param name="highPriority">Включение задач с высоким приоритетом</param>
-		/// <param name="mediumPriority">Включение задач с средним приоритетом</param>
-		/// <param name="LowPriority">Включение задач с низким приоритетом</param>
-		/// <param name="isReview">Включение задач со статусом "Review"</param>
-		/// <param name="isInProgress">Включение задач со статусом "InProgress"</param>
-		/// <param name="isExecRequired">Включение задач со статусом "isExecRequired"</param>
-		/// <param name="isFinished">Включение задач со статусом "isFinished"</param>
-		/// <param name="isUserLinked">Включение только тех задач, которые связаны с пользователем</param>
-		/// <returns>Скачивание отчета из браузера</returns>
-		public async Task<IActionResult> FormReportUser(string filterText, bool highPriority, bool mediumPriority
-								, bool LowPriority, bool isReview, bool isInProgress, bool isExecRequired, bool isFinished, bool isUserLinked)
+		/// </summary>
+		/// <param name="jsonStructure">Строка json</param>
+		/// <returns>Скачивание из браузера файла</returns>
+		public async Task<IActionResult> FormReportUser(string jsonStructure)
 		{
+			TaskFilterStruct Filters = Newtonsoft.Json.JsonConvert.DeserializeObject<TaskFilterStruct>(jsonStructure);
 			if (!User.Identity.IsAuthenticated)
 			{
 				return RedirectToAction("Index", "Home");
 			}
-			var filteredTasks = await GetTasksWithFilter(filterText, highPriority, mediumPriority
-								, LowPriority, isReview, isInProgress, isExecRequired, isFinished, isUserLinked);
+			var filteredTasks = await GetTasksWithFilter(Filters);
 			if (filteredTasks == null)
 			{
 				return View("SearchTask");
@@ -365,28 +360,22 @@ namespace TaskManagement.Controllers
 					 , "application/pdf"
 					 , $"{User.Identity.Name}_TasksReport_{DateTime.Now.ToString("mmHHMMyyyy")}.pdf");
 
+			return View();
+
 		}
 
 		/// <summary>
 		/// Метод, позволяющий отфильтровать задачи по входным фильтрам
 		/// </summary>
-		/// <param name="FilterText">Фильтрация по названию</param>
-		/// <param name="highPriority">Включение задач с высоким приоритетом</param>
-		/// <param name="mediumPriority">Включение задач с средним приоритетом</param>
-		/// <param name="LowPriority">Включение задач с низким приоритетом</param>
-		/// <param name="isReview">Включение задач со статусом "Review"</param>
-		/// <param name="isInProgress">Включение задач со статусом "InProgress"</param>
-		/// <param name="isExecRequired">Включение задач со статусом "isExecRequired"</param>
-		/// <param name="isFinished">Включение задач со статусом "isFinished"</param>
-		/// <param name="isUserLinked">Включение только тех задач, которые связаны с пользователем</param>
+		/// <param name="Filters">Фильтры коллекции</param>
 		/// <returns>Коллекция задач</returns>
-		public async Task<IEnumerable<Models.Task?>> GetTasksWithFilter(string FilterText, bool highPriority, bool mediumPriority
-								, bool LowPriority, bool isReview, bool isInProgress, bool isExecRequired, bool isFinished, bool isUserLinked)
+		public async Task<IEnumerable<Models.Task?>> GetTasksWithFilter(TaskFilterStruct Filters)
 		{
 
-			var currentUserId = Guid.Parse(User.Claims.Where(k => k.Type == "Id").FirstOrDefault().Value);
+			var currentUserId = Guid.Parse(User.Claims.Where(k => k.Type == "Id")
+				.FirstOrDefault().Value);
 			var temptasks = new object();
-			if(isUserLinked)
+			if(Filters.isUserLinked)
 			{
 				temptasks = await _usersRepos.GetLinkedTasksAsync(currentUserId);
 			}
@@ -396,23 +385,7 @@ namespace TaskManagement.Controllers
 			}
 
 			var tasks = temptasks as IEnumerable<Models.Task?>;
-
-			if ((FilterText != null) && (FilterText.Trim(' ') != string.Empty))
-				tasks = tasks.Where((k) => k.Name.Contains(FilterText.Trim(' ')));
-			if (!highPriority)
-				tasks = tasks.Where((k) => k.Priority != Data.Enums.Priority.High);
-			if (!mediumPriority)
-				tasks = tasks.Where((k) => k.Priority != Data.Enums.Priority.Medium);
-			if (!LowPriority)
-				tasks = tasks.Where((k) => k.Priority != Data.Enums.Priority.Low);
-			if (!isInProgress)
-				tasks = tasks.Where((k) => k.Status != Data.Enums.Status.InProgress);
-			if (!isExecRequired)
-				tasks = tasks.Where((k) => k.Status != Data.Enums.Status.ExecutorRequired);
-			if (!isReview)
-				tasks = tasks.Where((k) => k.Status != Data.Enums.Status.Review);
-			if (!isFinished)
-				tasks = tasks.Where((k) => k.Status != Data.Enums.Status.Finished);
+			tasks = Filters.Filter(tasks);
 
 			return tasks;
 		}

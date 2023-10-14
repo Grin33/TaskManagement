@@ -1,4 +1,4 @@
-﻿@using TaskManagement.Data.Enums
+﻿@*@using TaskManagement.Data.Enums
 @model TaskManagement.ViewModels.TaskFilterViewModel
 
 @if(User.Identity.IsAuthenticated)
@@ -20,7 +20,6 @@
 									<input class="w-100" type="text" id="FilterText" name="FilterText" placeholder="Название задачи" value="@Model.FilterText" style="border-radius:7px"/>
 								</div>
 								<div style="margin-right: 1rem; margin-bottom: 5px">
-									@*я знаю что это ужас, но у меня нет времени узнать как это сделать по-человечески*@
 									@if (Model.HighPriorityEnabled)
 									{
 										<input type="checkbox" id="HighPriorityCheck" value="true" name="highPriority" checked="checked" />
@@ -178,7 +177,7 @@
 																	}
 																</div>
 															</div>
-															@*<p class="card-text">@item.Description</p>*@
+															<p class="card-text">@item.Description</p>
 															</div>
 													</div>
 												</div>
@@ -194,3 +193,7 @@
 		</div>
 	</div>
 }
+*@
+<div>
+
+</div>

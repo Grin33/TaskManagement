@@ -90,7 +90,8 @@ namespace TaskManagement.Controllers
       if(User.Identity.IsAuthenticated)
       {
         var users = await _usersRepos.GetAllAsync();
-        var currentId = Guid.Parse(User.Claims.Where(k => k.Type == "Id").FirstOrDefault().Value);
+        var currentId = Guid.Parse(User.Claims.Where(k => k.Type == "Id")
+          .FirstOrDefault().Value);
         var currentUser = users.Where(x => x.Id == currentId).FirstOrDefault();
         if(currentUser != null) 
         {

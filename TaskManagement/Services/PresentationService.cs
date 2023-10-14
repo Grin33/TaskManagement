@@ -22,12 +22,12 @@ namespace TaskManagement.Services
       var stream = new MemoryStream();
       var pdfWriter = PdfWriter.GetInstance(doc, stream);
       pdfWriter.CloseStream = false;
-      //PdfWriter.GetInstance(doc, new FileStream($"{username}_TasksReport_{DateTime.Now.ToString("mmHHMMyyyy")}.pdf", FileMode.Create));
       try
       {
         doc.Open();
 
-        var baseFont = BaseFont.CreateFont(@"c:\Windows\Fonts\Arial.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+        var baseFont = BaseFont.CreateFont(@"c:\Windows\Fonts\Arial.ttf",
+          BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
         var font = new iTextSharp.text.Font(baseFont, 12, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
 
         var table = new PdfPTable(TaskColumns);
@@ -39,31 +39,36 @@ namespace TaskManagement.Services
         table.AddCell(cell);
 
 
-        var displayAttr = typeof(Models.Task).GetProperty("Name").GetCustomAttributes(false).Where(t => t is DisplayAttribute).FirstOrDefault() as DisplayAttribute;
+        var displayAttr = typeof(Models.Task).GetProperty("Name")
+          .GetCustomAttributes(false).Where(t => t is DisplayAttribute).FirstOrDefault() as DisplayAttribute;
         var name = displayAttr == null ? "Неопознанное свойство" : displayAttr.Name;
         cell = new PdfPCell(new Phrase(new Phrase(name, font)));
         cell.BackgroundColor = iTextSharp.text.BaseColor.LIGHT_GRAY;
         table.AddCell(cell);
 
-        displayAttr = typeof(Models.Task).GetProperty("Description").GetCustomAttributes(false).Where(t => t is DisplayAttribute).FirstOrDefault() as DisplayAttribute;
+        displayAttr = typeof(Models.Task).GetProperty("Description")
+          .GetCustomAttributes(false).Where(t => t is DisplayAttribute).FirstOrDefault() as DisplayAttribute;
         name = displayAttr == null ? "Неопознанное свойство" : displayAttr.Name;
         cell = new PdfPCell(new Phrase(new Phrase(name, font)));
         cell.BackgroundColor = iTextSharp.text.BaseColor.LIGHT_GRAY;
         table.AddCell(cell);
 
-        displayAttr = typeof(Models.Task).GetProperty("Priority").GetCustomAttributes(false).Where(t => t is DisplayAttribute).FirstOrDefault() as DisplayAttribute;
+        displayAttr = typeof(Models.Task).GetProperty("Priority")
+          .GetCustomAttributes(false).Where(t => t is DisplayAttribute).FirstOrDefault() as DisplayAttribute;
         name = displayAttr == null ? "Неопознанное свойство" : displayAttr.Name;
         cell = new PdfPCell(new Phrase(new Phrase(name, font)));
         cell.BackgroundColor = iTextSharp.text.BaseColor.LIGHT_GRAY;
         table.AddCell(cell);
 
-        displayAttr = typeof(Models.Task).GetProperty("Status").GetCustomAttributes(false).Where(t => t is DisplayAttribute).FirstOrDefault() as DisplayAttribute;
+        displayAttr = typeof(Models.Task).GetProperty("Status")
+          .GetCustomAttributes(false).Where(t => t is DisplayAttribute).FirstOrDefault() as DisplayAttribute;
         name = displayAttr == null ? "Неопознанное свойство" : displayAttr.Name;
         cell = new PdfPCell(new Phrase(new Phrase(name, font)));
         cell.BackgroundColor = iTextSharp.text.BaseColor.LIGHT_GRAY;
         table.AddCell(cell);
 
-        displayAttr = typeof(Models.Task).GetProperty("DeadLine").GetCustomAttributes(false).Where(t => t is DisplayAttribute).FirstOrDefault() as DisplayAttribute;
+        displayAttr = typeof(Models.Task).GetProperty("DeadLine")
+          .GetCustomAttributes(false).Where(t => t is DisplayAttribute).FirstOrDefault() as DisplayAttribute;
         name = displayAttr == null ? "Неопознанное свойство" : displayAttr.Name;
         cell = new PdfPCell(new Phrase(new Phrase(name, font)));
         cell.BackgroundColor = iTextSharp.text.BaseColor.LIGHT_GRAY;
@@ -90,11 +95,9 @@ namespace TaskManagement.Services
       }
       var byteinfo = stream.ToArray();
       stream.Write(byteinfo, 0, byteinfo.Length);
-      //stream.Flush();
       stream.Position = 0;
 
       return stream;
-      //return new FileStreamResult(stream, "application/pdf", $"{username}_TasksReport_{DateTime.Now.ToString("mmHHMMyyyy")}.pdf");
 
     }
   }

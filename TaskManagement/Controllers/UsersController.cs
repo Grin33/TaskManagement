@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Server.IISIntegration;
 using TaskManagement.Data.Interfaces;
 using TaskManagement.Models;
+using TaskManagement.Structs;
 using TaskManagement.ViewModels;
 
 namespace TaskManagement.Controllers
@@ -28,35 +30,39 @@ namespace TaskManagement.Controllers
     }
 
     [HttpPost]
-    public async Task<IActionResult> Index(string filterName, bool isAdmin, bool isModer, bool isDefault)
+    public async Task<IActionResult> Index(string filterName, bool isAdmin,
+      bool isModer, bool isDefault)
     {
+      var userFilter = new UserFilterStruct(filterName, isAdmin, isModer, isDefault);
+			
+      var filteredUsers = await FilterUsers(userFilter);
 
-			var allUsers = await _usersRepos.GetAllAsync();
-
-      if ((filterName != null)
-        && filterName != string.Empty)
-        allUsers = allUsers.Where((k) => k.Username.Contains(filterName));
-
-      if (!isAdmin)
-        allUsers = allUsers.Where((k) => k.Role != Data.Enums.Role.Admin);
-      if (!isModer)
-        allUsers = allUsers.Where((k) => k.Role != Data.Enums.Role.Moderator);
-      if (!isDefault)
-        allUsers = allUsers.Where((k) => k.Role != Data.Enums.Role.Default);
-
-      var usersFilterVM = new UserFilterViewModel(allUsers, filterName == null ? string.Empty : filterName, isAdmin, isModer, isDefault);
+      var usersFilterVM = new UserFilterViewModel(filteredUsers, userFilter);
 
 			return View(usersFilterVM);
 		}
-
-
+    
     /// <summary>
-    /// Получения окна информации о пользователе
+    /// Фильтрация коллекции пользователей на основе фильтров
     /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
-    /// <exception cref="Exception"></exception>
-    [HttpGet]
+    /// <param name="Filters">Фильтры</param>
+    /// <returns>Отфильтрованная коллекция</returns>
+    private async Task<IEnumerable<User?>> FilterUsers(UserFilterStruct Filters)
+    {
+			var allUsers = await _usersRepos.GetAllAsync();
+
+      allUsers = Filters.Filter(allUsers);
+
+      return allUsers;
+		}
+
+		/// <summary>
+		/// Получения окна информации о пользователе
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		/// <exception cref="Exception"></exception>
+		[HttpGet]
     public async Task<IActionResult> Details(Guid? id)
     {
       if (id == null)
